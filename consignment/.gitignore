@@ -1,0 +1,8 @@
+.env
+.env.*
+!.env.example
+.openai/
+build/
+node_modules/
+*.zip
+.DS_Store

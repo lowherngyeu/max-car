@@ -1,0 +1,11 @@
+import {readFileSync,writeFileSync,mkdirSync} from 'node:fs';
+const root=new URL('../',import.meta.url);
+let admin=readFileSync(new URL('private/admin.html',root),'utf8').replace(/Admin prototype · Local browser storage only\. This page is not protected by sign-in\./,'Admin · Listings currently save in this browser.').replace('<a href="index.html"','<a href="/"');
+admin=admin.replace('<header>','<div style="padding:12px 6%;text-align:right"><a href="/signout-with-chatgpt?return_to=%2F" target="_top">Sign out</a></div><header>');
+const publicPage=readFileSync(new URL('dist/index.html',root),'utf8');
+const carsPage=readFileSync(new URL('private/cars.html',root),'utf8');
+const template=readFileSync(new URL('worker/template.js',root),'utf8');
+mkdirSync(new URL('build/server/',root),{recursive:true});mkdirSync(new URL('build/.openai/',root),{recursive:true});
+writeFileSync(new URL('build/server/index.js',root),`const PUBLIC_PAGE=${JSON.stringify(publicPage)};\nconst ADMIN_PAGE=${JSON.stringify(admin)};\nconst CARS_PAGE=${JSON.stringify(carsPage)};\n`+template);
+const manifest=JSON.parse(readFileSync(new URL('.openai/hosting.json',root)));delete manifest.static;
+writeFileSync(new URL('build/.openai/hosting.json',root),JSON.stringify(manifest,null,2));
